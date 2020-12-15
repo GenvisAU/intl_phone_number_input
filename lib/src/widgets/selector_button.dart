@@ -62,6 +62,7 @@ class SelectorButton extends StatelessWidget {
                 showFlag: selectorConfig.showFlags,
                 useEmoji: selectorConfig.useEmoji,
                 textStyle: selectorTextStyle,
+                showText: false,
               )
         : MaterialButton(
             key: Key(TestHelper.DropdownButtonKeyValue),

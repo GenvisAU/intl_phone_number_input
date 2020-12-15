@@ -17,7 +17,7 @@ class Item extends StatelessWidget {
     this.useEmoji,
     this.textStyle,
     this.withCountryNames = false,
-    this.showText = true,
+    this.showText,
   }) : super(key: key);
 
   @override
@@ -32,9 +32,9 @@ class Item extends StatelessWidget {
             showFlag: showFlag,
             useEmoji: useEmoji,
           ),
-          if (showText)
+          if (showText != false)
             SizedBox(width: 12.0),
-          if (showText)
+          if (showText != false)
             Text(
               '${(country?.dialCode ?? '').padRight(5, "   ")}',
               textDirection: TextDirection.ltr,
