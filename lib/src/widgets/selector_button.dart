@@ -16,6 +16,7 @@ class SelectorButton extends StatelessWidget {
   final String locale;
   final bool isEnabled;
   final bool isScrollControlled;
+  final double width;
 
   final ValueChanged<Country> onCountryChanged;
 
@@ -31,24 +32,28 @@ class SelectorButton extends StatelessWidget {
     @required this.onCountryChanged,
     @required this.isEnabled,
     @required this.isScrollControlled,
+    this.width,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return selectorConfig.selectorType == PhoneInputSelectorType.DROPDOWN
         ? countries.isNotEmpty && countries.length > 1
-            ? DropdownButtonHideUnderline(
-                child: DropdownButton<Country>(
-                  key: Key(TestHelper.DropdownButtonKeyValue),
-                  hint: Item(
-                    country: country,
-                    showFlag: selectorConfig.showFlags,
-                    useEmoji: selectorConfig.useEmoji,
-                    textStyle: selectorTextStyle,
+            ? SizedBox(
+                width: width,
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<Country>(
+                    key: Key(TestHelper.DropdownButtonKeyValue),
+                    hint: Item(
+                      country: country,
+                      showFlag: selectorConfig.showFlags,
+                      useEmoji: selectorConfig.useEmoji,
+                      textStyle: selectorTextStyle,
+                    ),
+                    value: country,
+                    items: mapCountryToDropdownItem(countries),
+                    onChanged: isEnabled ? onCountryChanged : null,
                   ),
-                  value: country,
-                  items: mapCountryToDropdownItem(countries),
-                  onChanged: isEnabled ? onCountryChanged : null,
                 ),
               )
             : Item(
