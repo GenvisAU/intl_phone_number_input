@@ -49,6 +49,7 @@ class SelectorButton extends StatelessWidget {
                       showFlag: selectorConfig.showFlags,
                       useEmoji: selectorConfig.useEmoji,
                       textStyle: selectorTextStyle,
+                      showText: false,
                     ),
                     value: country,
                     items: mapCountryToDropdownItem(countries),

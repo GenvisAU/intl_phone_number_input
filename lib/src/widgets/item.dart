@@ -8,6 +8,7 @@ class Item extends StatelessWidget {
   final bool useEmoji;
   final TextStyle textStyle;
   final bool withCountryNames;
+  final bool showText;
 
   const Item({
     Key key,
@@ -16,6 +17,7 @@ class Item extends StatelessWidget {
     this.useEmoji,
     this.textStyle,
     this.withCountryNames = false,
+    this.showText = true,
   }) : super(key: key);
 
   @override
@@ -30,12 +32,14 @@ class Item extends StatelessWidget {
             showFlag: showFlag,
             useEmoji: useEmoji,
           ),
-          // SizedBox(width: 12.0),
-          // Text(
-          //   '${(country?.dialCode ?? '').padRight(5, "   ")}',
-          //   textDirection: TextDirection.ltr,
-          //   style: textStyle,
-          // ),
+          if (showText)
+            SizedBox(width: 12.0),
+          if (showText)
+            Text(
+              '${(country?.dialCode ?? '').padRight(5, "   ")}',
+              textDirection: TextDirection.ltr,
+              style: textStyle,
+            ),
         ],
       ),
     );
