@@ -36,7 +36,7 @@ class Item extends StatelessWidget {
             SizedBox(width: 12.0),
           if (showText)
             Text(
-              '${country?.dialCode ?? ''}',
+              '${country?.name ?? ''}',
               textDirection: TextDirection.ltr,
               style: textStyle,
             ),
