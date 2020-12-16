@@ -45,10 +45,6 @@ class AsYouTypeFormatter extends TextInputFormatter {
               newValue.selection.end == -1 ? 0 : newValue.selection.end)
           .replaceAll(separatorChars, '');
 
-      print('Inserted Digits $insertedDigits');
-      print('Old start ${oldValue.selection.start}');
-      print('New end ${newValue.selection.end}');
-
       formatAsYouType(input: textToParse).then(
         (String value) {
           String parsedText = value.replaceFirst(dialCode, '').trim();
