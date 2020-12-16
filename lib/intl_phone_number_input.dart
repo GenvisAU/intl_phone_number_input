@@ -7,3 +7,4 @@ export 'src/utils/util.dart';
 export 'src/providers/country_provider.dart';
 export 'src/models/country_list.dart';
 export 'src/models/country_model.dart';
+export 'src/utils/formatter/as_you_type_formatter.dart';
