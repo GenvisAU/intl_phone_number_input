@@ -6,7 +6,7 @@ import 'package:intl_phone_number_input/src/widgets/countries_search_list_widget
 import 'package:intl_phone_number_input/src/widgets/input_widget.dart';
 import 'package:intl_phone_number_input/src/widgets/item.dart';
 
-class SelectorButton extends StatelessWidget {
+class SelectorButton extends StatefulWidget {
   final List<Country> countries;
   final Country country;
   final SelectorConfig selectorConfig;
@@ -19,8 +19,9 @@ class SelectorButton extends StatelessWidget {
   final double width;
 
   final ValueChanged<Country> onCountryChanged;
+  final FocusNode fn = FocusNode();
 
-  const SelectorButton({
+  SelectorButton({
     Key key,
     @required this.countries,
     @required this.country,
@@ -33,65 +34,83 @@ class SelectorButton extends StatelessWidget {
     @required this.isEnabled,
     @required this.isScrollControlled,
     this.width,
-  }) : super(key: key);
+  });
+
+  @override
+  _SelectorButtonState createState() => _SelectorButtonState();
+}
+
+class _SelectorButtonState extends State<SelectorButton> {
+  bool isOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.fn.addListener(() {
+      setState(() {
+        isOpen = widget.fn.hasFocus;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return selectorConfig.selectorType == PhoneInputSelectorType.DROPDOWN
-        ? countries.isNotEmpty && countries.length > 1
+    return widget.selectorConfig.selectorType == PhoneInputSelectorType.DROPDOWN
+        ? widget.countries.isNotEmpty && widget.countries.length > 1
             ? SizedBox(
-                width: width,
+                width: widget.width,
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<Country>(
+                    focusNode: widget.fn,
                     key: Key(TestHelper.DropdownButtonKeyValue),
                     hint: Item(
-                      country: country,
-                      showFlag: selectorConfig.showFlags,
-                      useEmoji: selectorConfig.useEmoji,
-                      textStyle: selectorTextStyle,
+                      country: widget.country,
+                      showFlag: widget.selectorConfig.showFlags,
+                      useEmoji: widget.selectorConfig.useEmoji,
+                      textStyle: widget.selectorTextStyle,
                       showText: false,
                     ),
-                    value: country,
-                    items: mapCountryToDropdownItem(countries),
-                    onChanged: isEnabled ? onCountryChanged : null,
+                    value: widget.country,
+                    items: mapCountryToDropdownItem(widget.countries),
+                    onChanged: widget.isEnabled ? widget.onCountryChanged : null,
                   ),
                 ),
               )
             : Item(
-                country: country,
-                showFlag: selectorConfig.showFlags,
-                useEmoji: selectorConfig.useEmoji,
-                textStyle: selectorTextStyle,
+                country: widget.country,
+                showFlag: widget.selectorConfig.showFlags,
+                useEmoji: widget.selectorConfig.useEmoji,
+                textStyle: widget.selectorTextStyle,
                 showText: false,
               )
         : MaterialButton(
             key: Key(TestHelper.DropdownButtonKeyValue),
             padding: EdgeInsets.zero,
             minWidth: 0,
-            onPressed: countries.isNotEmpty && countries.length > 1
+            onPressed: widget.countries.isNotEmpty && widget.countries.length > 1
                 ? () async {
                     Country selected;
-                    if (selectorConfig.selectorType ==
+                    if (widget.selectorConfig.selectorType ==
                         PhoneInputSelectorType.BOTTOM_SHEET) {
                       selected = await showCountrySelectorBottomSheet(
-                          context, countries);
+                          context, widget.countries);
                     } else {
                       selected =
-                          await showCountrySelectorDialog(context, countries);
+                          await showCountrySelectorDialog(context, widget.countries);
                     }
 
                     if (selected != null) {
-                      onCountryChanged(selected);
+                      widget.onCountryChanged(selected);
                     }
                   }
                 : null,
             child: Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: Item(
-                country: country,
-                showFlag: selectorConfig.showFlags,
-                useEmoji: selectorConfig.useEmoji,
-                textStyle: selectorTextStyle,
+                country: widget.country,
+                showFlag: widget.selectorConfig.showFlags,
+                useEmoji: widget.selectorConfig.useEmoji,
+                textStyle: widget.selectorTextStyle,
               ),
             ),
           );
@@ -99,16 +118,17 @@ class SelectorButton extends StatelessWidget {
 
   List<DropdownMenuItem<Country>> mapCountryToDropdownItem(
       List<Country> countries) {
-    return countries.map((country) {
+    return countries.map((c) {
       return DropdownMenuItem<Country>(
-        value: country,
+        value: c,
         child: Item(
-          key: Key(TestHelper.countryItemKeyValue(country.alpha2Code)),
-          country: country,
-          showFlag: selectorConfig.showFlags,
-          useEmoji: selectorConfig.useEmoji,
-          textStyle: selectorTextStyle,
+          key: Key(TestHelper.countryItemKeyValue(c.alpha2Code)),
+          country: c,
+          showFlag: widget.selectorConfig.showFlags,
+          useEmoji: widget.selectorConfig.useEmoji,
+          textStyle: widget.selectorTextStyle,
           withCountryNames: false,
+          showText: widget.country.name != c.name && !isOpen
         ),
       );
     }).toList();
@@ -124,11 +144,11 @@ class SelectorButton extends StatelessWidget {
           width: double.maxFinite,
           child: CountrySearchListWidget(
             countries,
-            locale,
-            searchBoxDecoration: searchBoxDecoration,
-            showFlags: selectorConfig.showFlags,
-            useEmoji: selectorConfig.useEmoji,
-            autoFocus: autoFocusSearchField,
+            widget.locale,
+            searchBoxDecoration: widget.searchBoxDecoration,
+            showFlags: widget.selectorConfig.showFlags,
+            useEmoji: widget.selectorConfig.useEmoji,
+            autoFocus: widget.autoFocusSearchField,
           ),
         ),
       ),
@@ -140,7 +160,7 @@ class SelectorButton extends StatelessWidget {
     return showModalBottomSheet(
       context: context,
       clipBehavior: Clip.hardEdge,
-      isScrollControlled: isScrollControlled ?? true,
+      isScrollControlled: widget.isScrollControlled ?? true,
       backgroundColor: Colors.transparent,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -154,7 +174,7 @@ class SelectorButton extends StatelessWidget {
             builder: (BuildContext context, ScrollController controller) {
               return Container(
                 decoration: ShapeDecoration(
-                  color: selectorConfig.backgroundColor,
+                  color: widget.selectorConfig.backgroundColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(12),
@@ -164,12 +184,12 @@ class SelectorButton extends StatelessWidget {
                 ),
                 child: CountrySearchListWidget(
                   countries,
-                  locale,
-                  searchBoxDecoration: searchBoxDecoration,
+                  widget.locale,
+                  searchBoxDecoration: widget.searchBoxDecoration,
                   scrollController: controller,
-                  showFlags: selectorConfig.showFlags,
-                  useEmoji: selectorConfig.useEmoji,
-                  autoFocus: autoFocusSearchField,
+                  showFlags: widget.selectorConfig.showFlags,
+                  useEmoji: widget.selectorConfig.useEmoji,
+                  autoFocus: widget.autoFocusSearchField,
                 ),
               );
             },
