@@ -128,7 +128,7 @@ class _SelectorButtonState extends State<SelectorButton> {
           useEmoji: widget.selectorConfig.useEmoji,
           textStyle: widget.selectorTextStyle,
           withCountryNames: false,
-          showText: widget.country.name != c.name && !isOpen
+          showText: !isOpen
         ),
       );
     }).toList();
