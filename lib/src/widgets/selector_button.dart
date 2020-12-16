@@ -49,6 +49,7 @@ class SelectorButton extends StatelessWidget {
                       showFlag: selectorConfig.showFlags,
                       useEmoji: selectorConfig.useEmoji,
                       textStyle: selectorTextStyle,
+                      showText: false,
                     ),
                     value: country,
                     items: mapCountryToDropdownItem(countries),
@@ -61,6 +62,7 @@ class SelectorButton extends StatelessWidget {
                 showFlag: selectorConfig.showFlags,
                 useEmoji: selectorConfig.useEmoji,
                 textStyle: selectorTextStyle,
+                showText: false,
               )
         : MaterialButton(
             key: Key(TestHelper.DropdownButtonKeyValue),
@@ -107,6 +109,7 @@ class SelectorButton extends StatelessWidget {
           useEmoji: selectorConfig.useEmoji,
           textStyle: selectorTextStyle,
           withCountryNames: false,
+          showText: false,
         ),
       );
     }).toList();
